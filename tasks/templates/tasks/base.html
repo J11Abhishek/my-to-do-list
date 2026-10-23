@@ -1,0 +1,46 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple and organized personal task manager.">
+    <title>{% block title %}My Tasks{% endblock %} | TaskFlow</title>
+    <link rel="stylesheet" href="{% static 'tasks/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="{% url 'tasks:task_list' %}">
+            <span class="brand-icon" aria-hidden="true">✓</span>
+            <span>TaskFlow</span>
+        </a>
+        <span class="topbar-label">YOUR PERSONAL WORKSPACE</span>
+    </header>
+
+    <main class="page-container">
+        {% if messages %}
+            <div class="messages" aria-live="polite" aria-atomic="true">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}" role="status">
+                        <span>{{ message }}</span>
+                        <button type="button" class="message-close"
+                                aria-label="Dismiss notification"
+                                onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Small steps make great progress.</p>
+    </footer>
+
+    <script src="{% static 'tasks/js/app.js' %}" defer></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

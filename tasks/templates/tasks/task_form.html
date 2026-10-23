@@ -1,0 +1,48 @@
+
+{% extends "tasks/base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'tasks:task_list' %}">← Back to My Tasks</a>
+
+    <div class="form-card">
+        <p class="eyebrow">MAKE IT HAPPEN</p>
+        <h1>{{ page_title }}</h1>
+        <p class="subtitle">Give your task a clear title and add details if needed.</p>
+
+        <form method="post" class="task-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="field-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-field">
+                <label for="{{ form.title.id_for_label }}">Task title</label>
+                {{ form.title }}
+                {% for error in form.title.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.description.id_for_label }}">Description <span class="muted">(optional)</span></label>
+                {{ form.description }}
+                {% for error in form.description.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="button button-primary">
+                    {% if task %}Save changes{% else %}Create task{% endif %}
+                </button>
+                <a href="{% url 'tasks:task_list' %}"
+                   class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

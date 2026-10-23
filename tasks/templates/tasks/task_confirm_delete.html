@@ -1,0 +1,29 @@
+
+{% extends "tasks/base.html" %}
+
+{% block title %}Delete Task{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <a class="back-link" href="{% url 'tasks:task_list' %}">← Back to My Tasks</a>
+
+    <div class="form-card delete-card">
+        <div class="delete-icon" aria-hidden="true">!</div>
+        <p class="eyebrow">PLEASE CONFIRM</p>
+        <h1>Delete this task?</h1>
+        <p class="subtitle">
+            You're about to delete <strong>{{ task.title }}</strong>.
+            This action cannot be undone.
+        </p>
+
+        <form method="post" class="form-actions delete-form">
+            {% csrf_token %}
+            <button type="submit" class="button button-danger">
+                Yes, delete task
+            </button>
+            <a href="{% url 'tasks:task_list' %}"
+               class="button button-secondary">Cancel</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

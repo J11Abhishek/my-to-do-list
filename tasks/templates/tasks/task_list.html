@@ -1,0 +1,132 @@
+
+{% extends "tasks/base.html" %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">YOUR PRODUCTIVITY SPACE</p>
+            <h1>My Tasks <span class="heading-sparkle">✳</span></h1>
+            <p class="subtitle">A little progress each day adds up to big results.</p>
+        </div>
+        <a class="button button-primary" href="{% url 'tasks:task_create' %}">
+            <span aria-hidden="true">＋</span> Add task
+        </a>
+    </div>
+
+    <section class="stats-grid" aria-label="Task statistics">
+        <article class="stat-card">
+            <span class="stat-label">Total tasks</span>
+            <strong class="stat-number" id="total-count">{{ total_count }}</strong>
+            <span class="stat-note">All your tasks</span>
+        </article>
+        <article class="stat-card">
+            <span class="stat-label">Pending</span>
+            <strong class="stat-number" id="pending-count">{{ pending_count }}</strong>
+                {{ tasks|length }}
+            </strong>
+            <span class="stat-note">Still to do</span>
+        </article>
+        <article class="stat-card">
+            <span class="stat-label">Completed</span>
+            <strong class="stat-number" id="completed-count">{{ completed_count }}</strong>
+            <span class="stat-note">You've made progress</span>
+        </article>
+    </section>
+
+    <section class="task-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Your task list</h2>
+                <p class="muted">Keep your priorities clear and simple.</p>
+            </div>
+        </div>
+
+        <div class="toolbar">
+            <label class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <span class="visually-hidden">Search tasks</span>
+                <input type="search" id="task-search"
+                       placeholder="Search by title or description..."
+                       autocomplete="off">
+            </label>
+
+            <div class="filter-group" role="group" aria-label="Filter tasks">
+                <button type="button" class="filter-button active"
+                        data-filter="all" aria-pressed="true">All</button>
+                <button type="button" class="filter-button"
+                        data-filter="pending" aria-pressed="false">Pending</button>
+                <button type="button" class="filter-button"
+                        data-filter="completed" aria-pressed="false">Completed</button>
+            </div>
+        </div>
+
+        <div class="task-list" id="task-list">
+            {% for task in tasks %}
+                <article class="task-card {% if task.is_completed %}is-completed{% endif %}"
+                         data-task-card
+                         data-status="{% if task.is_completed %}completed{% else %}pending{% endif %}"
+                         data-search="{{ task.title }} {{ task.description|default:'' }}"
+                         data-task-id="{{ task.pk }}">
+
+                    <form class="toggle-form"
+                          action="{% url 'tasks:task_toggle' task.pk %}"
+                          method="post">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="completion-button"
+                                aria-label="{% if task.is_completed %}Mark {{ task.title }} as pending{% else %}Mark {{ task.title }} as completed{% endif %}"
+                                title="Toggle completion">
+                            {% if task.is_completed %}✓{% else %}<span></span>{% endif %}
+                        </button>
+                    </form>
+
+                    <div class="task-content">
+                        <h3 class="task-title">{{ task.title }}</h3>
+
+                        {% if task.description %}
+                            <p class="task-description">{{ task.description }}</p>
+                        {% else %}
+                            <p class="task-description muted">No description added.</p>
+                        {% endif %}
+
+                        <div class="task-meta">
+                            <span>Created {{ task.created_at|date:"M j, Y" }}</span>
+                            <span class="status-badge">
+                                {% if task.is_completed %}Completed{% else %}Pending{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="task-actions">
+                        <a class="button button-secondary button-small"
+                           href="{% url 'tasks:task_update' task.pk %}">Edit</a>
+                        <a class="button button-danger button-small"
+                           href="{% url 'tasks:task_delete' task.pk %}">Delete</a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-icon" aria-hidden="true">✳</div>
+                    <h3>No tasks yet</h3>
+                    <p>Your task list is a blank canvas. Add your first task to get started.</p>
+                    <a class="button button-primary"
+                       href="{% url 'tasks:task_create' %}">Create your first task</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="empty-state search-empty" id="search-empty" hidden>
+            <h3>No matching tasks</h3>
+            <p>Try a different search or choose another filter.</p>
+        </div>
+
+        <div class="list-footer">
+            <span id="visible-count">Showing {{ tasks|length }} tasks</span>
+            <span>One task at a time.</span>
+        </div>
+    </section>
+</section>
+{% endblock %}
