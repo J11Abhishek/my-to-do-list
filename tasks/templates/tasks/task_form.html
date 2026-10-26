@@ -28,6 +28,15 @@
             </div>
 
             <div class="form-field">
+                <label for="{{ form.notification_email.id_for_label }}">Notification email <span class="muted">(optional)</span></label>
+                {{ form.notification_email }}
+                {% for error in form.notification_email.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+                <p class="muted">We'll email this address when the task is marked complete.</p>
+            </div>
+
+            <div class="form-field">
                 <label for="{{ form.description.id_for_label }}">Description <span class="muted">(optional)</span></label>
                 {{ form.description }}
                 {% for error in form.description.errors %}

@@ -15,12 +15,17 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = Task
-        fields = ["title", "description"]
+        fields = ["title", "description", "notification_email"]
         widgets = {
             "title": forms.TextInput(attrs={
                 "placeholder": "What needs to get done?",
                 "class": "form-control",
                 "maxlength": "200",
+            }),
+            "notification_email": forms.EmailInput(attrs={
+                "placeholder": "you@example.com (optional)",
+                "class": "form-control",
+                "autocomplete": "email",
             }),
             "description": forms.Textarea(attrs={
                 "placeholder": "Add some details (optional)",
